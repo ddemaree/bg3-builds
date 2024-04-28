@@ -1,5 +1,13 @@
 import { defineField, defineType } from 'sanity';
 
+function getNumbersInRange(start: number, end: number) {
+  const rangeNumbers = [];
+  for (let i = start; i <= end; i++) {
+    rangeNumbers.push(i);
+  }
+  return rangeNumbers;
+}
+
 export const classNames = [
   { title: 'Barbarian', value: 'barbarian' },
   { title: 'Bard', value: 'bard' },
@@ -43,6 +51,16 @@ export const classType = defineType({
 
         return true;
       }),
+    }),
+    defineField({
+      type: 'number',
+      name: 'subclassLevel',
+      title: 'Subclass Level',
+      description: 'Level where subclass is selected, if applicable',
+      validation: rule => rule.integer().min(0).max(12),
+      options: {
+        list: getNumbersInRange(0,12),
+      }
     })
   ],
 });

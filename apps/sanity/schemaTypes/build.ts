@@ -15,6 +15,14 @@ export const classNames = [
   { title: 'Wizard', value: 'wizard' }
 ]
 
+function getNumbersInRange(start: number, end: number) {
+  const rangeNumbers = [];
+  for (let i = start; i <= end; i++) {
+    rangeNumbers.push(i);
+  }
+  return rangeNumbers;
+}
+
 export const buildStep = defineType({
   type: 'object',
   name: 'buildStep',
@@ -36,7 +44,26 @@ export const buildStep = defineType({
       type: 'number',
       name: 'level',
       title: 'Level',
-      validation: Rule => Rule.required().integer().min(1).max(20)
+      validation: Rule => Rule.required().integer().min(1).max(20),
+      options: {
+        list: getNumbersInRange(1,12),
+      }
+    },
+    { 
+      type: 'string',
+      name: 'subclass',
+      title: 'Subclass',
+      hidden: ({parent, value}: { parent: any, value: string }) => {
+        if(!parent.class?.subclassLevel) {
+          return true;
+        }
+
+        if(parent.class.subclassLevel !== parent.level) {
+          return true;
+        }
+        
+        return false;
+      }
     }
   ],
   preview: {
@@ -44,7 +71,7 @@ export const buildStep = defineType({
       className: 'class.name',
       level: 'level'
     },
-    prepare({ className, level }) {
+    prepare({ className, level }: { className: string, level: string }) {
       return {
         title: `${className} - Level ${level}`
       }
